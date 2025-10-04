@@ -1,436 +1,801 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>NeonVendor — AirPod Reselling Vendor • $9.99</title>
-<meta name="description" content="Purchase an AirPod reselling vendor for $9.99. Dark, futuristic UI. Simulated checkout." />
-<style>
-  /* -------------------------------------------
-     Dark futuristic aesthetic + layout
-     Single-file, no external assets.
-     ------------------------------------------- */
-  :root{
-    --bg-1: #03040a;
-    --bg-2: #0b0f18;
-    --glass: rgba(255,255,255,0.03);
-    --accent: #00f0ff;
-    --accent-2: #9b6bff;
-    --muted: #9aa4b2;
-    --neon: 0 0 18px rgba(0,240,255,0.12), 0 0 40px rgba(155,107,255,0.06);
-    --glass-border: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    --price: #00ffd1;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  }
-  html,body{height:100%;}
-  body{
-    margin:0;
-    background:
-      radial-gradient(1200px 600px at 10% 10%, rgba(155,107,255,0.06), transparent 8%),
-      radial-gradient(900px 400px at 90% 80%, rgba(0,240,255,0.04), transparent 6%),
-      linear-gradient(180deg,var(--bg-1), var(--bg-2));
-    color:#e6eef7;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:32px;
-  }
-
-  .container{
-    width:100%;
-    max-width:1080px;
-    display:grid;
-    grid-template-columns: 1fr 420px;
-    gap:28px;
-    align-items:start;
-  }
-
-  /* Header / Branding */
-  header.brand{
-    grid-column:1 / -1;
-    display:flex;
-    align-items:center;
-    gap:18px;
-    margin-bottom:6px;
-  }
-  .logo {
-    width:64px;height:64px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:14px;
-    background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    box-shadow: var(--neon);
-    border:1px solid rgba(255,255,255,0.04);
-    position:relative;
-    overflow:hidden;
-  }
-  .logo svg{width:44px;height:44px;filter:drop-shadow(0 6px 16px rgba(0,0,0,0.6));}
-  h1{font-size:20px;margin:0}
-  .tag{color:var(--muted);font-size:13px;margin-top:2px}
-
-  /* Product card */
-  .hero{
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:18px;
-    padding:22px;
-    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-    border:1px solid rgba(255,255,255,0.03);
-  }
-  .product{
-    display:flex;
-    gap:20px;
-    align-items:center;
-  }
-  .device {
-    width:220px;height:220px;border-radius:14px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    display:flex;align-items:center;justify-content:center;
-    border:1px solid rgba(255,255,255,0.03);
-    position:relative;
-    padding:18px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.7);
-    transform: translateZ(0);
-  }
-  .device .ear{
-    width:86px;height:140px;background:linear-gradient(180deg,#ffffff,#f2f6ff);
-    border-radius:44px;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.5), inset 0 -6px 12px rgba(0,0,0,0.08);
-    transform: rotate(-15deg);
-  }
-  .device::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:linear-gradient(180deg, rgba(0,240,255,0.02), transparent);
-    mix-blend-mode:overlay;
-    pointer-events:none;
-  }
-  .details{flex:1}
-  .product-title{font-size:20px;margin:0 0 6px 0;letter-spacing:0.2px}
-  .product-sub{color:var(--muted);font-size:13px;margin-bottom:12px}
-  .features{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-  .chip{background:rgba(255,255,255,0.02);padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.02);font-size:12px;color:var(--muted)}
-  .price-row{display:flex;align-items:center;gap:12px;margin-top:6px}
-  .price{font-size:26px;font-weight:700;color:var(--price)}
-  .old{font-size:13px;color:rgba(255,255,255,0.25);text-decoration:line-through}
-
-  /* Right column: purchase panel */
-  .panel{
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:18px;padding:20px;border:1px solid rgba(255,255,255,0.03);
-    height:fit-content;
-    box-shadow: 0 6px 26px rgba(2,6,23,0.6);
-  }
-  .panel h2{margin:0 0 8px 0;font-size:16px}
-  .panel p{color:var(--muted);font-size:13px;margin:0 0 16px}
-  .buy-btn{
-    width:100%;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    padding:14px 16px;
-    border-radius:12px;
-    background: linear-gradient(90deg,var(--accent),var(--accent-2));
-    color:#021018;
-    font-weight:700;
-    font-size:15px;
-    border:0;
-    cursor:pointer;
-    box-shadow: 0 8px 30px rgba(155,107,255,0.18);
-    transition:transform .18s ease, opacity .12s ease;
-  }
-  .buy-btn:active{transform:translateY(2px)}
-  .buy-btn:focus{outline:3px solid rgba(0,240,255,0.12);outline-offset:3px}
-
-  .small{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
-
-  /* Footer / small grid items */
-  .grid-feats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-    margin-top:18px;
-  }
-  .stat{
-    background:var(--glass);
-    border-radius:10px;padding:10px;
-    border:1px solid rgba(255,255,255,0.02);
-    text-align:center;
-  }
-  .stat .val{font-weight:700;font-size:15px}
-  .stat .lbl{font-size:12px;color:var(--muted)}
-
-  /* Modal */
-  .modal-backdrop{
-    position:fixed;inset:0;display:none;place-items:center;background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.7));z-index:60;
-  }
-  .modal{
-    width:min(720px,96%);background:linear-gradient(180deg, #061018, #071222);
-    border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 30px 90px rgba(0,0,0,0.7);
-    transform:translateY(-8px);
-  }
-  .modal h3{margin:0 0 10px 0}
-  .form-row{display:flex;gap:10px;margin-bottom:10px}
-  .form-row .col{flex:1}
-  label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
-  input[type="text"], input[type="email"] , input[type="tel"]{
-    width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
-    background:rgba(255,255,255,0.02);color:inherit;font-size:14px;
-  }
-  .pay-summary{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);margin-top:12px}
-  .pay-summary .row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
-  .confirm{
-    margin-top:12px;padding:12px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700;
-    background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#021018;width:100%;
-  }
-
-  .close-x{position:absolute;right:10px;top:8px;background:transparent;border:0;color:var(--muted);font-size:18px;cursor:pointer}
-
-  /* Confirmation banner */
-  .toast{
-    position:fixed;left:50%;transform:translateX(-50%);bottom:28px;background:linear-gradient(90deg,#042, #042);color:#bff7ef;padding:12px 18px;border-radius:999px;border:1px solid rgba(0,255,220,0.08);display:none;z-index:80;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-  }
-
-  /* Responsive */
-  @media (max-width:900px){
-    .container{grid-template-columns:1fr;gap:16px}
-    .device{width:160px;height:160px}
-    .panel{order:2}
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Pods | Premium Pod Vendors</title>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0a0a0f;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, #00d4ff, #6a00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            color: #6a00ff;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: #b0b0b0;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(106, 0, 255, 0.3);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00d4ff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: #6a00ff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        nav ul li a:hover {
+            color: #00d4ff;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #00d4ff;
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            background: radial-gradient(circle at 50% 50%, rgba(106, 0, 255, 0.1) 0%, rgba(10, 10, 15, 0) 70%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgxMDYsIDAsIDI1NSwgMC4wNSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiLz48L3N2Zz4=');
+            opacity: 0.5;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #d0d0d0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(90deg, #00d4ff, #6a00ff);
+            color: #0a0a0f;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        /* Products Section */
+        .products {
+            padding: 100px 0;
+            background-color: rgba(15, 15, 20, 0.7);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #6a00ff);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .product-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .product-card {
+            background: rgba(20, 20, 30, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(106, 0, 255, 0.2);
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            border-color: rgba(106, 0, 255, 0.5);
+        }
+        
+        .product-image {
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, rgba(0, 212, 255, 0) 70%);
+            border-radius: 50%;
+        }
+        
+        .product-image img {
+            max-width: 80%;
+            max-height: 80%;
+            z-index: 2;
+            position: relative;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-info h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+        
+        .product-description {
+            font-size: 0.95rem;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+        
+        .buy-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(90deg, #00d4ff, #6a00ff);
+            color: #0a0a0f;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .buy-button:hover {
+            background: linear-gradient(90deg, #6a00ff, #00d4ff);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        /* Purchase Section */
+        .purchase {
+            padding: 100px 0;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.05) 0%, rgba(10, 10, 15, 0) 70%);
+        }
+        
+        .purchase-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .purchase-image {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .purchase-image img {
+            max-width: 100%;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+        }
+        
+        .purchase-form {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(20, 20, 30, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(106, 0, 255, 0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #d0d0d0;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(30, 30, 40, 0.8);
+            border: 1px solid rgba(106, 0, 255, 0.3);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #050508;
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(106, 0, 255, 0.3);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column ul li a:hover {
+            color: #00d4ff;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(106, 0, 255, 0.2);
+            color: #808080;
+            font-size: 0.9rem;
+        }
+        
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: rgba(20, 20, 30, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .success-message h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+            }
+            
+            nav ul li {
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+            
+            .hero {
+                padding: 150px 0 80px;
+                text-align: center;
+            }
+            
+            .purchase-container {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container" role="main">
-    <header class="brand" aria-label="NeonVendor header">
-      <div class="logo" aria-hidden="true">
-        <!-- Futuristic icon -->
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="g1" x1="0" x2="1">
-              <stop offset="0" stop-color="#00f0ff"/>
-              <stop offset="1" stop-color="#9b6bff"/>
-            </linearGradient>
-          </defs>
-          <rect x="6" y="10" width="52" height="44" rx="8" stroke="url(#g1)" stroke-width="2" fill="rgba(255,255,255,0.02)"/>
-          <path d="M20 34h24" stroke="url(#g1)" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="42" cy="26" r="3.2" fill="url(#g1)"/>
-        </svg>
-      </div>
-      <div>
-        <h1>NeonVendor</h1>
-        <div class="tag">Dark futuristic AirPod reselling vendor • Secure · Instant</div>
-      </div>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">NEXUS<span>PODS</span></a>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#purchase">Purchase</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </header>
 
-    <!-- Left: product details -->
-    <section class="hero" aria-labelledby="product-heading">
-      <div class="product" >
-        <div class="device" aria-hidden="true">
-          <div class="ear" title="Neon AirPod"></div>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Premium Vendors</h1>
+                <p>We have all the premium reselling vendors with the best quality pods at competitive prices. Connect with trusted suppliers today.</p>
+                <a href="#products" class="cta-button">Purchase Premium Vendors</a>
+            </div>
         </div>
-
-        <div class="details">
-          <h2 id="product-heading" class="product-title">AirPod Reselling Vendor</h2>
-          <div class="product-sub">A complete, automated vendor package that lets you resell AirPods at scale. One-time purchase.</div>
-
-          <div class="features" aria-hidden="true">
-            <div class="chip">One-time purchase</div>
-            <div class="chip">Instant download</div>
-            <div class="chip">Lightweight • Portable</div>
-            <div class="chip">Maintenance-free</div>
-          </div>
-
-          <div class="price-row" aria-hidden="true">
-            <div class="price" id="price">$9.99</div>
-            <div class="old">$29.99</div>
-          </div>
-
-          <p style="color:var(--muted);margin-top:12px;font-size:14px;">
-            Purchase gains you access to a vendor script, onboarding guide, and a compact UI kit. This is a simulated checkout—no real payment is processed.
-          </p>
-
-          <div class="grid-feats" style="margin-top:16px">
-            <div class="stat"><div class="val">2.1k</div><div class="lbl">Downloads</div></div>
-            <div class="stat"><div class="val">4.9/5</div><div class="lbl">Avg. rating</div></div>
-            <div class="stat"><div class="val">Instant</div><div class="lbl">Delivery</div></div>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <!-- Right: buying panel -->
-    <aside class="panel" aria-labelledby="buy-heading">
-      <h2 id="buy-heading">Buy the Vendor</h2>
-      <p>One-time purchase. Includes license & onboarding instructions.</p>
-
-      <div style="display:flex;gap:10px;margin-bottom:12px">
-        <div style="flex:1;padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);text-align:center">
-          <div style="font-size:12px;color:var(--muted)">Price</div>
-          <div style="font-weight:800;font-size:18px;color:var(--price)">$9.99</div>
+    <!-- Products Section -->
+    <section class="products" id="products">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Premium Pods</h2>
+                <p>Choose from our exclusive collection of next-generation audio pods</p>
+            </div>
+            <div class="product-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <!-- Custom AirPod SVG in site style -->
+                        <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background glow -->
+                            <defs>
+                                <radialGradient id="glow" cx="0.5" cy="0.5" r="0.8">
+                                    <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.3" />
+                                    <stop offset="100%" stop-color="#6a00ff" stop-opacity="0" />
+                                </radialGradient>
+                                <linearGradient id="podGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#1a1a2e" />
+                                    <stop offset="100%" stop-color="#16213e" />
+                                </linearGradient>
+                            </defs>
+                            
+                            <!-- Glow effect -->
+                            <ellipse cx="100" cy="100" rx="80" ry="40" fill="url(#glow)" />
+                            
+                            <!-- Left AirPod -->
+                            <ellipse cx="70" cy="100" rx="25" ry="40" fill="url(#podGradient)" stroke="#00d4ff" stroke-width="2" />
+                            <ellipse cx="70" cy="100" rx="20" ry="35" fill="none" stroke="#6a00ff" stroke-width="1" />
+                            
+                            <!-- Right AirPod -->
+                            <ellipse cx="130" cy="100" rx="25" ry="40" fill="url(#podGradient)" stroke="#00d4ff" stroke-width="2" />
+                            <ellipse cx="130" cy="100" rx="20" ry="35" fill="none" stroke="#6a00ff" stroke-width="1" />
+                            
+                            <!-- Connecting line -->
+                            <line x1="95" y1="100" x2="105" y2="100" stroke="#00d4ff" stroke-width="2" />
+                            
+                            <!-- Details -->
+                            <circle cx="70" cy="85" r="3" fill="#00d4ff" />
+                            <circle cx="130" cy="85" r="3" fill="#00d4ff" />
+                        </svg>
+                    </div>
+                    <div class="product-info">
+                        <h3>AirPod Vendor</h3>
+                        <div class="product-price">$4.99 USD</div>
+                        <p class="product-description">Premium AirPod resell vendor with all models including Pro versions with ANC. 1:1 replica quality with all the premium features you expect.</p>
+                        <button class="buy-button" data-product="AirPod Vendor">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div style="flex:1;padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);text-align:center">
-          <div style="font-size:12px;color:var(--muted)">Type</div>
-          <div style="font-weight:700;font-size:14px">Digital • License</div>
+    </section>
+
+    <!-- Purchase Section -->
+    <section class="purchase" id="purchase">
+        <div class="container">
+            <div class="section-title">
+                <h2>Get Your Vendor</h2>
+                <p>Complete your order with our secure checkout process</p>
+            </div>
+            <div class="purchase-container">
+                <div class="purchase-image">
+                    <svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#1a1a2e" />
+                        <!-- Custom AirPod SVG in site style -->
+                        <defs>
+                            <radialGradient id="largeGlow" cx="0.5" cy="0.5" r="0.8">
+                                <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.3" />
+                                <stop offset="100%" stop-color="#6a00ff" stop-opacity="0" />
+                            </radialGradient>
+                            <linearGradient id="largePodGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1a1a2e" />
+                                <stop offset="100%" stop-color="#16213e" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Glow effect -->
+                        <ellipse cx="200" cy="150" rx="120" ry="60" fill="url(#largeGlow)" />
+                        
+                        <!-- Left AirPod -->
+                        <ellipse cx="140" cy="150" rx="35" ry="60" fill="url(#largePodGradient)" stroke="#00d4ff" stroke-width="2" />
+                        <ellipse cx="140" cy="150" rx="30" ry="55" fill="none" stroke="#6a00ff" stroke-width="1" />
+                        
+                        <!-- Right AirPod -->
+                        <ellipse cx="260" cy="150" rx="35" ry="60" fill="url(#largePodGradient)" stroke="#00d4ff" stroke-width="2" />
+                        <ellipse cx="260" cy="150" rx="30" ry="55" fill="none" stroke="#6a00ff" stroke-width="1" />
+                        
+                        <!-- Connecting line -->
+                        <line x1="185" y1="150" x2="215" y2="150" stroke="#00d4ff" stroke-width="2" />
+                        
+                        <!-- Details -->
+                        <circle cx="140" cy="125" r="5" fill="#00d4ff" />
+                        <circle cx="260" cy="125" r="5" fill="#00d4ff" />
+                    </svg>
+                </div>
+                <div class="purchase-form">
+                    <h3>Order Details</h3>
+                    <form id="order-form">
+                        <div class="form-group">
+                            <label for="product">Select Vendor</label>
+                            <select id="product" name="product" required>
+                                <option value="">Choose a vendor</option>
+                                <option value="AirPod Vendor">AirPod Vendor - $4.99 USD</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" name="quantity" min="1" max="10" value="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="card-number">Credit Card Number</label>
+                            <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry">Expiry Date</label>
+                                <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address">Shipping Address</label>
+                            <input type="text" id="address" name="address" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="zip">ZIP Code</label>
+                                <input type="text" id="zip" name="zip" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="cta-button" style="width: 100%;">Complete Purchase</button>
+                    </form>
+                    
+                    <div id="success-message" class="success-message">
+                        <h3>✅ Purchase Successful!</h3>
+                        <p>Thank you for your order! A confirmation email has been sent with your vendor information.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <button class="buy-btn" id="buyNow" aria-haspopup="dialog" aria-controls="checkoutModal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:0.95">
-          <path d="M3 3h2l1.68 9.39A2 2 0 0 0 8.65 15H19" stroke="#021018" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M16 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-7 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="#021018"/>
-        </svg>
-        Purchase — $9.99 USD
-      </button>
-
-      <div class="small">All sales final • License grants non-exclusive distribution rights</div>
-    </aside>
-  </div>
-
-  <!-- Checkout modal (simulated) -->
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal" role="document" aria-labelledby="modalTitle">
-      <button class="close-x" id="closeModal" aria-label="Close checkout">✕</button>
-      <h3 id="modalTitle">Secure Checkout</h3>
-      <p style="color:var(--muted);margin-top:0;margin-bottom:12px">This is a simulated checkout for demonstration. No payment is processed.</p>
-
-      <form id="checkoutForm" onsubmit="return false;" autocomplete="off" aria-describedby="checkoutNote">
-        <div class="form-row">
-          <div class="col">
-            <label for="name">Full name</label>
-            <input id="name" name="name" type="text" required placeholder="Alex Nova" />
-          </div>
-          <div class="col">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" required placeholder="you@neonmail.com" />
-          </div>
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Nexus Pods</h3>
+                    <p>We connect you with premium pod vendors offering the best quality products at competitive prices.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#purchase">Purchase</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Warranty</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li>Email: support@nexuspods.com</li>
+                        <li>Phone: 1-800-NEXUS-PD</li>
+                        <li>Address: 123 Tech Avenue, Silicon Valley, CA</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Nexus Pods. All rights reserved.</p>
+            </div>
         </div>
+    </footer>
 
-        <div class="form-row">
-          <div class="col">
-            <label for="card">Card number</label>
-            <input id="card" name="card" inputmode="numeric" type="text" maxlength="19" placeholder="4242 4242 4242 4242" required />
-          </div>
-          <div style="width:110px">
-            <label for="exp">Exp</label>
-            <input id="exp" name="exp" type="text" pattern="\d{2}\/\d{2}" placeholder="MM/YY" required />
-          </div>
-        </div>
+    <script>
+        // Simple JavaScript for form handling and product selection
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add to cart buttons
+            const addToCartButtons = document.querySelectorAll('.buy-button');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const product = this.getAttribute('data-product');
+                    document.getElementById('product').value = product;
+                    document.getElementById('purchase').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // Form submission
+            const orderForm = document.getElementById('order-form');
+            const successMessage = document.getElementById('success-message');
+            
+            orderForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const product = document.getElementById('product').value;
+                const quantity = document.getElementById('quantity').value;
+                
+                // In a real application, you would send this data to a server
+                // For this demo, we'll simulate sending an email
+                simulateEmail(name, email, product, quantity);
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                
+                // Reset form
+                orderForm.reset();
+                
+                // Scroll to success message
+                successMessage.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Function to simulate sending an email
+            function simulateEmail(name, email, product, quantity) {
+                // In a real application, this would be handled by a backend service
+                console.log(`Email sent to: ${email}`);
+                console.log(`Subject: ✅ Thanks for Your Purchase from NexusPods!`);
+                console.log(`Body:
+Hi ${name},
 
-        <div class="form-row">
-          <div style="width:140px">
-            <label for="cvc">CVC</label>
-            <input id="cvc" name="cvc" type="text" maxlength="4" inputmode="numeric" placeholder="123" required />
-          </div>
-          <div class="col">
-            <label for="phone">Phone (optional)</label>
-            <input id="phone" name="phone" type="tel" placeholder="+1 (555) 555-5555" />
-          </div>
-        </div>
+Thank you for your purchase from NexusPods! 🎧 We're thrilled to have you as a valued customer.
 
-        <div id="checkoutNote" class="pay-summary" aria-hidden="false">
-          <div class="row"><span>Item</span><strong>AirPod Reselling Vendor</strong></div>
-          <div class="row"><span>Subtotal</span><span>$9.99</span></div>
-          <div class="row"><span>Processing</span><span>$0.00</span></div>
-          <div class="row" style="font-size:16px"><strong>Total</strong><strong>$9.99</strong></div>
-        </div>
+Your Vendor: https://www.alibaba.com/product-detail/2025-Wholesale-Version-Noise-Reduction-ANC_1601573012371.html?spm=a2700.galleryofferlist.p_offer.d_image.562b13a0wWIROz&s=p
 
-        <button class="confirm" id="confirmPurchase" type="submit">Confirm Purchase • $9.99</button>
-      </form>
-    </div>
-  </div>
+Thank you again for choosing NexusPods — where sound meets innovation.
 
-  <div class="toast" id="toast" role="status" aria-live="polite">Thank you — purchase complete. Download link sent to your email (simulated).</div>
-
-<script>
-  // Simple, secure-feeling UX scripts (no real payments).
-  (function(){
-    const buyNow = document.getElementById('buyNow');
-    const backdrop = document.getElementById('modalBackdrop');
-    const close = document.getElementById('closeModal');
-    const form = document.getElementById('checkoutForm');
-    const toast = document.getElementById('toast');
-    const confirm = document.getElementById('confirmPurchase');
-
-    function openModal(){
-      backdrop.style.display = 'grid';
-      backdrop.setAttribute('aria-hidden','false');
-      // focus first input for accessibility
-      setTimeout(()=>document.getElementById('name').focus(), 120);
-      // trap simple scroll
-      document.body.style.overflow = 'hidden';
-    }
-    function closeModal(){
-      backdrop.style.display = 'none';
-      backdrop.setAttribute('aria-hidden','true');
-      document.body.style.overflow = '';
-      buyNow.focus();
-    }
-
-    buyNow.addEventListener('click', openModal);
-    close.addEventListener('click', closeModal);
-    backdrop.addEventListener('click', function(e){
-      if(e.target === backdrop) closeModal();
-    });
-    document.addEventListener('keydown', function(e){
-      if(e.key === 'Escape' && backdrop.style.display === 'grid') closeModal();
-    });
-
-    // Format card input (very light)
-    const card = document.getElementById('card');
-    card.addEventListener('input', function(){
-      let v = this.value.replace(/\D/g,'').slice(0,16);
-      let parts = [];
-      for(let i=0;i<v.length;i+=4) parts.push(v.slice(i,i+4));
-      this.value = parts.join(' ');
-    });
-
-    // Simulated "charge" flow
-    form.addEventListener('submit', async function(evt){
-      evt.preventDefault();
-      confirm.disabled = true;
-      confirm.textContent = 'Processing...';
-      // simple validation
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const cardVal = card.value.replace(/\s/g,'');
-      if(!name || !email || cardVal.length < 12){
-        alert('Please check your information — this is a demo checkout.');
-        confirm.disabled = false;
-        confirm.textContent = 'Confirm Purchase • $9.99';
-        return;
-      }
-      // fake network delay
-      await new Promise(r => setTimeout(r, 900));
-      confirm.textContent = 'Success';
-      // show toast
-      toast.style.display = 'block';
-      setTimeout(()=>{ toast.style.display = 'none'; }, 4500);
-
-      // store a simulated receipt in localStorage
-      try{
-        const receipts = JSON.parse(localStorage.getItem('nv_receipts')||'[]');
-        receipts.unshift({id:'NV-'+Date.now(),name, email, item:'AirPod Reselling Vendor', price:9.99, date: new Date().toISOString()});
-        localStorage.setItem('nv_receipts', JSON.stringify(receipts.slice(0,20)));
-      }catch(e){ /* ignore storage errors */ }
-
-      // show a simple "download" link dialog (simulated)
-      await new Promise(r => setTimeout(r, 700));
-      alert('Purchase complete (simulated). A download link would be emailed to: ' + email + '\\n\\nNote: This demo does not perform real payments.');
-      closeModal();
-      confirm.disabled = false;
-      confirm.textContent = 'Confirm Purchase • $9.99';
-    });
-
-    // Small accessibility improvement: press Enter on buy button
-    buyNow.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(); }
-    });
-  })();
-</script>
+Best regards,
+The NexusPods Team
+📧 support@nexuspods.com
+🌐 www.nexuspods.com
+                `);
+                
+                // In a real implementation, you would use a service like:
+                // - EmailJS
+                // - SendGrid API
+                // - Your own backend with nodemailer
+                // - A form submission service
+            }
+        });
+    </script>
 </body>
 </html>
